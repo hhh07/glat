@@ -194,7 +194,12 @@ class TranslationLevenshteinModifiedTask(TranslationTask):
     ):
         model.train()
         train_ratio = max(0, min(1, update_num / self.cfg.total_up))
-        sample["glat"] = {"context_p": self.cfg.start_p - self.cfg.minus_p * train_ratio}
+        #hzj
+        #glat_context_p是个超参数，替换的系数，wmt从0.5退火到0.3，iwmtl16固定0.5
+        #居然没有写成参数，而是直接写在代码里面
+        #sample["glat"] = {"context_p": self.cfg.start_p - self.cfg.minus_p * train_ratio}
+        #直接设置为0.5
+        sample["glat"] = {"context_p": self.cfg.start_p }
         sample["prev_target"] = self.inject_noise(sample["target"])
         with torch.autograd.profiler.record_function("forward"):
             loss, sample_size, logging_output = criterion(model, sample)
